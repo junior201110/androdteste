@@ -8,6 +8,7 @@ $db = new PDO('mysql:host=mysql.hostinger.com.br;dbname=u771591478_notas;charset
 $app->get('/',function(){
     echo "OLA";
 });
+//Requisiçao via JSONObjectRequest
 $app->post('/inicio/post/jor', function() use($app,$db){
     //$usuario = json_encode(array("usuario" => array("nome"=>$_POST['nome'],"sobrenome"=>$_POST['snome'])));
 
@@ -17,13 +18,14 @@ $app->post('/inicio/post/jor', function() use($app,$db){
 
         $data['user'] = $dbquery->fetchAll(PDO::FETCH_ASSOC);
 
-        $app->render('inicio.php', $data);
+        $app->render('inicioJor.php', $data);
     }
     else
             echo
                 json_encode(array("erro 1"=>"erro no php"));
 
 });
+//Requisiçao via JSONArrayRequest
 $app->post('/inicio/post/jar', function() use($app, $db){
     //$usuario = json_encode(array('conexão via JsonArrayRequest!'));
 
@@ -34,17 +36,12 @@ $app->post('/inicio/post/jar', function() use($app, $db){
 
         $data['user'] = $dbquery->fetchAll(PDO::FETCH_ASSOC);
 
-        $app->render('inicio.php', $data);
+        $app->render('inicioJar.php', $data);
     }
     else
         echo
         json_encode(array("usuario não cadastrado ou não encontrado"));
 
-
-});
-$app->get('/inicio/post/:nome', function($nome) use($app){
-
-    echo $nome;
 
 });
 
