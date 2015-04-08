@@ -1,0 +1,4 @@
+//sync projetos com repositorios github
+git push -u origin master
+//host e usuario do hostinger via ftp
+host => ftp.webserverandroid.esy.es usuario=>u771591478
