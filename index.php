@@ -3,8 +3,8 @@
 require "vendor/autoload.php";
 
 $app = new \Slim\Slim(array("debug"=>true, 'templates.path'=>'views'));
-//$db = new PDO('mysql:host=mysql.hostinger.com.br;dbname=u771591478_notas;charset=utf8','u771591478_root','@junior201110');
-$db = new PDO('mysql:host=localhost;dbname=notas;charset=utf8','root','root');
+$db = new PDO('mysql:host=mysql.hostinger.com.br;dbname=u771591478_notas;charset=utf8','u771591478_root','@junior201110');
+//$db = new PDO('mysql:host=localhost;dbname=notas;charset=utf8','root','root');
 //host=mysql.hostinger.com.br /u771591478_notas/ u771591478_root/ set to @junior201110
 $app->get('/',function() use($app){
          $app->render('inicio.php');

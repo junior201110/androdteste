@@ -1,21 +1,10 @@
 <?php
-//foreach ($user as $key => $value) {
-//	echo json_encode(array("id"=>"1"));
-//}
-
-foreach ($user as $key => $value) {
-    if(verificaPlataforma() == true){
-
-        echo json_encode(array("erro"=>"false","id"=>$value['id'],"login"=>$value['login']));
-
-    }
-    else{
-        echo "LOGADO";
-}
-
-
-}
-
+/**
+ * Created by PhpStorm.
+ * User: junior
+ * Date: 09/04/15
+ * Time: 16:49
+ */
 function verificaPlataforma(){
 
     $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
