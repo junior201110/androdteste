@@ -1,8 +1,12 @@
-<?php
-//foreach ($user as $key => $value) {
-//	echo json_encode(array("id"=>"1"));
-//}
-
-foreach ($user as $key => $value) {
-	echo json_encode(array("login"=>$value['login']));
-}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Contagem de Notas
+	</title>
+    <link
+</head>
+<body>
+	<div id="principal"></div> 
+</body>
+</html>

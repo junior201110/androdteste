@@ -1,12 +1,6 @@
 {
     "require": {
         "php": ">=5.4.0",
-        "slim/slim": "2.*",
-        "slim/extras": "*",
-        "slim/middleware": "*",
-        "illuminate/database": "4.2.16",
-        "monolog/monolog": ">=1.6.0",
-        "flynsarmy/slim-monolog": "1.0.0",
-        "league/oauth2-server": ">=4.1.1"
+        "slim/slim": "2.*"
     }
 }

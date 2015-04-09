@@ -4,5 +4,5 @@
 //}
 
 foreach ($user as $key => $value) {
-	echo json_encode(array("id"=>$value['id'],"login"=>$value['login']));
+	echo json_encode(array("erro"=>"false","id"=>$value['id'],"login"=>$value['login']));
 }
