@@ -36,7 +36,7 @@ $app->post('/inicio/post/jor', function() use($app,$db){
 });
 
 //Requisiçao via JSONArrayRequest
-$app->get('/inicio/post/jar/:nome/:senha', function($nome, $senha) use($app, $db){
+$app->get('/inicio/post/jar/:id', function($nome, $senha) use($app, $db){
     //$usuario = json_encode(array('conexão via JsonArrayRequest!'));
 
      //echo $usuario;
@@ -53,6 +53,37 @@ $app->get('/inicio/post/jar/:nome/:senha', function($nome, $senha) use($app, $db
 
     }
 
+
+});
+
+$app->get('/produtos/jor/:id', function($id) use($app, $db){
+    echo json_encode(array("erro"=>"false",'id do produto'=>$id));
+});
+//carrega pedidos
+
+$app->get('/pedidos/jor/:id', function($id) use($app, $db){
+    $dbquery = $db->prepare("SELECT * FROM pedidos WHERE iduser = '$id'");
+    $dbquery->execute() or die("ERRO");
+
+    if($dbquery->rowCount() > 0){
+        $data['pedidos'] = $dbquery->fetchAll(PDO::FETCH_ASSOC);
+        $pedidos = $data['pedidos'];
+        $idp = $pedidos[0]['idp'];
+            //executa uma query pra selecionar os produtos referente ao pedido
+        $dbq = $db->prepare("SELECT * FROM produto WHERE idproduto = '$idp'");
+        $dbq->execute();
+        $data['produtos'] = $dbq->fetchAll(PDO::FETCH_ASSOC);
+        $data['cont']     = $dbquery->rowCount();
+
+        $app->render('produtos.php',$data);
+
+
+
+        //$data['cont'] = $dbquery->rowCount()
+
+    }else{
+        echo "Não feito";
+    }
 
 });
 
