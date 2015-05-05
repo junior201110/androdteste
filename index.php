@@ -1,13 +1,18 @@
 <?php
 
+session_start();
 require "vendor/autoload.php";
+require 'functions.php';
+
+
 
 $app = new \Slim\Slim(array("debug"=>true, 'templates.path'=>'views'));
 //$db = new PDO('mysql:host=mysql.hostinger.com.br;dbname=u771591478_notas;charset=utf8','u771591478_root','@junior201110');
 $db = new PDO('mysql:host=localhost;dbname=notas;charset=utf8','root','root');
 //host=mysql.hostinger.com.br /u771591478_notas/ u771591478_root/ set to @junior201110
 $app->get('/',function() use($app){
-         $app->render('inicio.php');
+    $rota['url'] = $app->urlFor('cadastro');
+    $app->render('inicio.php',$rota);
 })->name("inicio");
 
 //Requisiçao via JSONObjectRequest
@@ -21,12 +26,9 @@ $app->post('/inicio/post/jor', function() use($app,$db){
 
         $data['user'] = $dbquery->fetchAll(PDO::FETCH_ASSOC);
 
-        if(verificaPlataforma() == true){
+
             $app->render('inicioJor.php', $data);
-        }else{
-            $url = $app->urlFor("inicio",array('inicio'));
-            $app->render('salaUsuario.php', array('voltar'=>$url));
-        }
+
 
     }
     else{
@@ -61,31 +63,80 @@ $app->get('/produtos/jor/:id', function($id) use($app, $db){
 });
 //carrega pedidos
 
-$app->get('/pedidos/jor/:id', function($id) use($app, $db){
+$app->get('/pedidos/jor/:id/', function($id) use($app, $db){
     $dbquery = $db->prepare("SELECT * FROM pedidos WHERE iduser = '$id'");
     $dbquery->execute() or die("ERRO");
 
     if($dbquery->rowCount() > 0){
-        $data['pedidos'] = $dbquery->fetchAll(PDO::FETCH_ASSOC);
-        $pedidos = $data['pedidos'];
-        $idp = $pedidos[0]['idp'];
-            //executa uma query pra selecionar os produtos referente ao pedido
-        $dbq = $db->prepare("SELECT * FROM produto WHERE idproduto = '$idp'");
-        $dbq->execute();
-        $data['produtos'] = $dbq->fetchAll(PDO::FETCH_ASSOC);
-        $data['cont']     = $dbquery->rowCount();
 
-        $app->render('produtos.php',$data);
+        $data = $dbquery->fetchAll(PDO::FETCH_ASSOC);
+
+        if(is_string($data) || is_object($data))
+            return utf8_encode($data);
+        $json = json_encode($data);
+        if($json == false){
+            switch(json_last_error()){
+                case JSON_ERROR_NONE:
+                    echo '- No errors';
+                    break;
+                case JSON_ERROR_DEPTH:
+                    echo '- MAXIMUM STACK DEPTH EXCEEDED';
+                    break;
+                case JSON_ERROR_STATE_MISMATCH:
+                    echo '- UNDERFLOW OR THE MODES MISMACH';
+                    break;
 
 
-
-        //$data['cont'] = $dbquery->rowCount()
+            }
+        }
+        echo $json;
 
     }else{
-        echo "Não feito";
+
+            echo json_encode(array(array("desc"=>"404")));
+
     }
 
 });
+
+$app->get('/cadastro.php', function() use($app){
+
+    $app->render('cadastro_user.php');
+
+})->name('cadastro');
+$app->post('/cadastro/input', function() use($app, $db){
+
+    $request = $app->request;
+    $login = $request->post('login');
+    $senha = $request->post('senha');
+
+    /*
+    $sql = "INSERT INTO usuario (id, login, senha) VALUES (NULL, '$_POST[login]', '$_POST[senha]');";
+    */
+    $dbq = $db->prepare("INSERT INTO usuario (id, login, senha) VALUES (NULL , :login, :senha)");
+    $inserido=$dbq->execute(array(":login"=>$login,":senha"=>$senha));
+
+    if($inserido){
+        $app->flash("mesage","inserido");
+    }else{
+
+        $app->flash("erros","ocorreu um erro");
+
+    }
+
+    echo "INSERIDO";
+
+});
+$app->get("/delete/pedido/:idp", function($idp) use($app, $db){
+    $sql = "DELETE FROM pedidos WHERE idp = '$idp'";
+    $dbq = $db->prepare($sql);
+    $dbq->execute();
+    if($idp)
+        $app->redirect("ok");
+    else
+        echo "NÂO FEITO";
+});
+
 
 
 function verificaPlataforma(){
@@ -104,6 +155,21 @@ function verificaPlataforma(){
         return false;
     }
 }
+function objectToArray($data){
+    if(is_array($data) || is_object($data)){
+        foreach($data as $key => $value){
+            if($value == 'null')
+                $value = null;
+            $result[$key] = objectToArray($value);
 
+            return $result;
+
+
+        }
+        return $$data;
+
+    }
+
+}
 $app->run();
 

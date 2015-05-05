@@ -21,6 +21,9 @@
                 <input type="submit">
 
             </form>
+            <div id="cadastro">
+                <a href="<?php echo $url;?>">Cadastro de Novo Usuario</a>
+            </div>
         </div>
         <div id="rdp">
             CBL
