@@ -128,6 +128,7 @@ $app->post('/cadastro/input', function() use($app, $db){
 
 });
 $app->get("/delete/pedido/:idp", function($idp) use($app, $db){
+
     $sql = "DELETE FROM pedidos WHERE idp = '$idp'";
     $dbq = $db->prepare($sql);
     $dbq->execute();
@@ -137,7 +138,27 @@ $app->get("/delete/pedido/:idp", function($idp) use($app, $db){
         echo "NÂO FEITO";
 });
 
+$app->post("/insert/pedido", function() use($app, $db){
 
+    //$sql = "INSERT INTO pedidos (idp, desc, produto, data, iduser, nnotas) VALUES (NULL, '$desc', '$produto', '$data', '$iduser', '$nnotas')";
+    $sql = "INSERT INTO pedidos (idp, desc, produto, data, iduser, nnotas) VALUES (NULL, 'w', 'r', 'f', '1', '22');";
+    $dbq = $db->prepare($sql);
+    $feito = $dbq->execute();
+
+    if($feito){
+        echo "OK";
+    }else{
+        $erro = $dbq->errorInfo();
+            echo $erro[0] + "<br/>";
+            echo $erro[2];
+
+
+    }
+
+
+
+
+});
 
 function verificaPlataforma(){
 
@@ -171,5 +192,6 @@ function objectToArray($data){
     }
 
 }
+
 $app->run();
 
